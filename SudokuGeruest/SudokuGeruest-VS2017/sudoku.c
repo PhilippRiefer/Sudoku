@@ -1,7 +1,7 @@
 //=============================================================================
 // Dateiname: sudoku.c
-// Gerüst:
-//   Autor: Robert Heß
+// Gerï¿½st:
+//   Autor: Robert HeÃŸ
 //   Version: 1.2
 //   Datum: 23.05.2020
 // Ausgestaltung:
@@ -12,7 +12,7 @@
 //=============================================================================
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>	// Headerdatei für Fensteranwendugen
+#include <windows.h>	// Headerdatei fï¿½r Fensteranwendugen
 #include <stdio.h>
 #include "sudoku.h"
 
@@ -39,7 +39,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 // Diese Funktion wird von der Fensteranwendung an verschiedenen
 // Stellen aufgerufen. Im ersten Parameter 'task' steht dabei die
 // Aufgabe, die von der Funktion erledigt werden soll. Die anderen
-// fünf Parameter haben die folgenden Bedeutungen:
+// fï¿½nf Parameter haben die folgenden Bedeutungen:
 //				| r			| c			| e			| text		| hWnd
 // getNumber	| Zeile		| Spalte	| 0			|			|
 // getGuess		| Zeile		| Spalte	| Element	|			|
@@ -59,8 +59,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 // Handle:	Handle des Fensters
 {
 	static tDaten Felder[9][9] = { 0 };		//Definiert mit static zur dauerhaften Speicherung da die Funktion zwischendurch verlassen wird
-	static int firstCall=1;					// Markierung für den ersten Aufruf
-	int returnValue=0;						// Rückgabewert der Funktion
+	static int firstCall=1;					// Markierung fï¿½r den ersten Aufruf
+	int returnValue=0;						// Rï¿½ckgabewert der Funktion
 	FILE* out = NULL;
 	FILE* inp = NULL;
 	char FileName[] = "";
@@ -83,7 +83,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		returnValue = Felder[r][c].Zahlvorgabe;//Return ob Feld ein Vorgabewert ist (true / false)
 		break;
 	case getGuess:		// geratene Ziffer
-		if (e == 0) returnValue = Felder[r][c].einsGeraten;//Wenn erstes Feld abgefragt wird, Wert von einsGeraten (true / false) zurückgeben
+		if (e == 0) returnValue = Felder[r][c].einsGeraten;//Wenn erstes Feld abgefragt wird, Wert von einsGeraten (true / false) zurï¿½ckgeben
 		else if (e == 1) returnValue = Felder[r][c].zweiGeraten;
 		else if (e == 2) returnValue = Felder[r][c].dreiGeraten;
 		else if (e == 3) returnValue = Felder[r][c].vierGeraten;
@@ -96,12 +96,12 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		break;
 	case singleClick:	// einfacher Mausklick
 		if (!Felder[r][c].Zahlvorgabe) {//Falls das Feld keine Vorgabe war
-			//welches Feld angeklickt wurde (hätte man auch mit switch cases machen können, aber keine lust das nochmal zu ändern)
+			//welches Feld angeklickt wurde (hï¿½tte man auch mit switch cases machen kï¿½nnen, aber keine lust das nochmal zu ï¿½ndern)
 			if (e == 0) {//Falls erstes Feld angeklickt wurde
 				if (Felder[r][c].einsGeraten) {//Falls das Feld schon geraten wurde
-					Felder[r][c].einsGeraten = 0;//Entraten (abwählen (siehe Trump))
+					Felder[r][c].einsGeraten = 0;//Entraten (abwï¿½hlen (siehe Trump))
 				}
-				else Felder[r][c].einsGeraten = 1;//Falls Feld noch nicht angewählt wurde, anwählen
+				else Felder[r][c].einsGeraten = 1;//Falls Feld noch nicht angewï¿½hlt wurde, anwï¿½hlen
 			}
 			if (e == 1) {
 				if (Felder[r][c].zweiGeraten) {
@@ -165,7 +165,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		}
 		break;
 	case loadFile://Sudoku aus Datei laden
-		inp = fopen((const char*)text, "rb");//inp Datei wird geöffnet als Lesen, Binär
+		inp = fopen((const char*)text, "rb");//inp Datei wird geï¿½ffnet als Lesen, Binï¿½r
 
 		// Spielfeld leeren
 		for (i = 0; i < 9; i++) {//Reihe
@@ -187,11 +187,11 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			}
 		}
 
-		// Spielfeld mit den Werten aus der eingelesenen Datei füllen
+		// Spielfeld mit den Werten aus der eingelesenen Datei fï¿½llen
 		for (i = 0; i < 9; i++) {//Reihe
 			for (j = 0; j < 9; j++) {//Spalte
 				fscanf(inp, "%1d", &Felder[i][j].Zahlenwert);// Zahlenwert in das jeweilige Feld schreiben
-				//Steht in dem Feld eine Zahl wird diese Fett und schreibgeschützt eingetragen
+				//Steht in dem Feld eine Zahl wird diese Fett und schreibgeschï¿½tzt eingetragen
 				if (Felder[i][j].Zahlenwert) {//Falls der Zahlenwert true ist (!= 0) (Falls das Feld eine Zahl hat)
 					Felder[i][j].Zahlvorgabe = 1;//Zahl ist vorgegeben
 					Felder[i][j].Zahlgef = 1;//Zahl ist gefunden
@@ -200,8 +200,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		}
 		break;
 	case saveFile:		// Sudoku in Datei speichern
-		out = fopen((const char*)text, "wt");//Datei öffnen, in welche geschrieben werden soll
-		if(out==NULL) {//Falls Datei out nicht geöffnet werden konnte
+		out = fopen((const char*)text, "wt");//Datei ï¿½ffnen, in welche geschrieben werden soll
+		if(out==NULL) {//Falls Datei out nicht geï¿½ffnet werden konnte
 			printf("Konnte Ausgabedatei nicht \224ffnen: %s\n", (const char*)text);//Error message mit Dateinamen
 			return -1;//Return Fehlercode
 		}
@@ -212,7 +212,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			} 
 			fprintf(out, "\n" );//Zeilenumbruch nach 9 Zahlen, weil Sudoku ist 9x9
 		}
-		if(out) fclose(out);//Falls Dokument "out" offen ist, erfolgt das Schließen des Dokumentes
+		if(out) fclose(out);//Falls Dokument "out" offen ist, erfolgt das Schlieï¿½en des Dokumentes
 		
 		break;
 	case special1:		// Reaktion auf Spezialtaste 1
@@ -339,7 +339,7 @@ void intVector(tDaten Felder[9][9]) {
 			Felder[i][j].neunGeraten = 0;
 			Felder[i][j].Zahlgef = 0;
 
-			//Falls das Feld schon eine Zahl drin hat die true ist (größer als 0)
+			//Falls das Feld schon eine Zahl drin hat die true ist (grï¿½ï¿½er als 0)
 			if (Felder[i][j].Zahlenwert) {
 				//Es ist eine Vorgabe = true (1)
 				Felder[i][j].Zahlvorgabe = 1;
