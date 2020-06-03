@@ -11,6 +11,8 @@
 // Beschreibung: Einfache Windows-Applikation zum spielen von Sudoku, gesteuert mit der Maus
 //=============================================================================
 
+//git commit test from raspberry pi
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>	// Headerdatei f�r Fensteranwendugen
 #include <stdio.h>
