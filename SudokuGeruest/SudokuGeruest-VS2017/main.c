@@ -1,21 +1,21 @@
 //=============================================================================
 // Dateiname: main.c
-// Autor: Robert Heß
+// Autor: Robert Heï¿½
 // Version: 1.2
 // Datum: 23.05.2020
-// Beschreibung: Gerüst für ein Sudoku-Programm mit Windows-Benutzeroberfläche
+// Beschreibung: Gerï¿½st fï¿½r ein Sudoku-Programm mit Windows-Benutzeroberflï¿½che
 //=============================================================================
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>	// Headerdatei für Fensteranwendugen
+#include <windows.h>	// Headerdatei fï¿½r Fensteranwendugen
 #include "sudoku.h"
 
 #define X_OFFSET 10		// linker Abstand zum Rand des Fensters
 #define Y_OFFSET 10		// oberer Abstand zum Rand des Fensters
-#define BOX_SIZE 49		// Größe eines Feldes; der Wert sollte sein: 3n+1
-#define GAP_SIZE 7		// extra Abstand für 9er-Block
+#define BOX_SIZE 49		// Grï¿½ï¿½e eines Feldes; der Wert sollte sein: 3n+1
+#define GAP_SIZE 7		// extra Abstand fï¿½r 9er-Block
 
-// IDs für die Knöpfe
+// IDs fï¿½r die Knï¿½pfe
 #define LOAD_BUTTON_ID 1
 #define SAVE_BUTTON_ID 2
 #define SPECIAL_BUTTON1_ID 3
@@ -28,12 +28,13 @@ void drawWindow(HWND hWnd);
 void drawGrid(HDC hdc, int xOff, int yOff, int boxSize, int gapSize);
 void drawNumbers(HDC hdc, int xOff, int yOff, int boxSize, int gapSize);
 
-// Hauptprogramm für eine Fensteranwendung
+// Hauptprogramm fï¿½r eine Fensteranwendung
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				   PSTR szCmdLine, int iCmdShow)
 {
+	/*int windowsizex = sizeof()*/
 	static TCHAR szAppName[] = TEXT ("Sudoku");	// Name der Applikation
-	HWND         hWnd;			// Handle für Fenster
+	HWND         hWnd;			// Handle fï¿½r Fenster
 	MSG          msg;			// aktuelle Windows-Nachricht
 	WNDCLASSEX   wndclassex;	// Beschreibung der Applikation
 	int xPosButton = X_OFFSET;	// Zum Berechnen der Position der Tasten
@@ -60,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return -1;
 	}
 
-	// Ein Fenster für die Applikation erstellen
+	// Ein Fenster fï¿½r die Applikation erstellen
 	hWnd = CreateWindowEx(
 		WS_EX_OVERLAPPEDWINDOW,		// erweiterter Fensterstil
 		szAppName,					// Name der Fensterklasse
@@ -69,11 +70,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		CW_USEDEFAULT,				// X-Position des Fensters
 		CW_USEDEFAULT,				// Y-Position des Fensters
 		2*X_OFFSET+9*BOX_SIZE+2*GAP_SIZE+13,	// Fensterbreite
-		3*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE+38+30,	// Fensterhöhe
-		NULL,						// übergeordnetes Fenster
-		NULL,						// Menü
+		3*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE+38+30,	// Fensterhï¿½he
+		NULL,						// ï¿½bergeordnetes Fenster
+		NULL,						// Menï¿½
 		hInstance,					// Handle der Applikation
-		NULL);						// keine zusätzlichen Parameter
+		NULL);						// keine zusï¿½tzlichen Parameter
 
 	// Knopf zum Laden eines Sudokus aus einer Datei
 	CreateWindow( 
@@ -82,33 +83,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,	// Tastenstil
 		xPosButton,					// x-Position
 	    2*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE,	// y-Position
-	    70,							// Breite
-	    25,							// Höhe
+	    strlen("laden ...") * 8,							// Breite
+	    25,							// Hï¿½he
 	    hWnd,						// parent window 
 	    (HMENU)LOAD_BUTTON_ID,		// Kennung
 	    hInstance,					// Handle der Applikation
-	    NULL);						// keine zusätzlichen Parameter
+	    NULL);						// keine zusï¿½tzlichen Parameter
 
-	// Position der nächsten Taste berechnen
-	xPosButton += 70+10;
+	// Position der nï¿½chsten Taste berechnen
+	xPosButton += strlen("laden ...") * 8 + 10;
 
 #ifdef SAVE_BUTTON_INCLUDED
 	// Knopf zum Speichern eines Sudokus in eine Datei
 	CreateWindow( 
 		"BUTTON",					// vordefinierte Fensterklasse 
-	    "speichern ...",			// Text auf Taste
+	    "speichern",			// Text auf Taste
 	    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,	// Tastenstil
 	    xPosButton,					// x-Position
 	    2*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE,	// y-Position
-	    90,						// button width 
-	    25,							// Breite
-	    hWnd,						// Höhe
+		strlen("speichern") * 8,		// Breite
+	    25,							// Hï¿½he
+	    hWnd,						// parent window
 	    (HMENU)SAVE_BUTTON_ID,		// Kennung
 	    hInstance,					// Handle der Applikation
-	    NULL);						// keine zusätzlichen Parameter
+	    NULL);						// keine zusï¿½tzlichen Parameter
 
-	// Position der nächsten Taste berechnen
-	xPosButton += 90+10;
+	// Position der nï¿½chsten Taste berechnen
+	xPosButton += strlen("speichern") * 8 + 10;
 #endif
 
 #ifdef SPECIAL_BUTTON_1_INCLUDED
@@ -119,15 +120,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,	// Tastenstil
 	    xPosButton,					// x-Position
 	    2*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE,	// y-Position
-	    70,							// Breite
-	    25,							// Höhe
+	    strlen(SPECIAL_BUTTON_1_INCLUDED) * 8,							// Breite
+	    25,							// Hï¿½he
 	    hWnd,						// parent window
 	    (HMENU)SPECIAL_BUTTON1_ID,	// Kennung
 	    hInstance,					// Handle der Applikation
-	    NULL);						// keine zusätzlichen Parameter
+	    NULL);						// keine zusï¿½tzlichen Parameter
 
-	// Position der nächsten Taste berechnen
-	xPosButton += 70+10;
+	// Position der nï¿½chsten Taste berechnen
+	xPosButton += strlen(SPECIAL_BUTTON_1_INCLUDED) * 8 + 10;
 #endif
 
 #ifdef SPECIAL_BUTTON_2_INCLUDED
@@ -138,15 +139,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,	// Tastenstil
 	    xPosButton,					// x-Position
 	    2*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE,	// y-Position
-	    70,							// Breite
-	    25,							// Höhe
+	    strlen(SPECIAL_BUTTON_2_INCLUDED) * 8,							// Breite
+	    25,							// Hï¿½he
 	    hWnd,						// parent window
 	    (HMENU)SPECIAL_BUTTON2_ID,	// Kennung
 	    hInstance,					// Handle der Applikation
-	    NULL);						// keine zusätzlichen Parameter
+	    NULL);						// keine zusï¿½tzlichen Parameter
 
-	// Position der nächsten Taste berechnen
-	xPosButton += 70+10;
+	// Position der nï¿½chsten Taste berechnen
+	xPosButton += strlen(SPECIAL_BUTTON_2_INCLUDED) * 8 + 10;
 #endif
 
 #ifdef SPECIAL_BUTTON_3_INCLUDED
@@ -157,15 +158,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	    WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,	// Tastenstil
 	    xPosButton,					// x-Position
 	    2*Y_OFFSET+9*BOX_SIZE+2*GAP_SIZE,	// y-Position
-	    70,							// Breite
-	    25,							// Höhe
+	    strlen(SPECIAL_BUTTON_3_INCLUDED) * 8,							// Breite
+	    25,							// Hï¿½he
 	    hWnd,						// parent window
 	    (HMENU)SPECIAL_BUTTON3_ID,	// Kennung
 	    hInstance,					// Handle der Applikation
-	    NULL);						// keine zusätzlichen Parameter
+	    NULL);						// keine zusï¿½tzlichen Parameter
 
-	// Position der nächsten Taste berechnen
-	xPosButton += 70+10;
+	// Position der nï¿½chsten Taste berechnen
+	xPosButton += strlen(SPECIAL_BUTTON_3_INCLUDED) * 8 + 10;
 #endif
 
 	// Fenster anzeigen und aktualisieren
@@ -189,32 +190,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 // Funktion zum Behandeln der Nachrichten vom Betriebssystem
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static int x1, y1, n1;	// Position im Sudoku beim Drücken der Maus
+	static int x1, y1, n1;	// Position im Sudoku beim Drï¿½cken der Maus
 	int x2, y2, n2;			// Position im Sudoku beim Loslassen der Maus
 	RECT rect;				// Region, die neu gezeichnet werden soll
-	char Filter[] =			// Dateifilter für Dialog
+	char Filter[] =			// Dateifilter fï¿½r Dialog
 		"Sudoku-Datei (*.sdk)\0*.sdk\0" "Alle Dateien (*.*)\0*.*\0";
 	char FileName[301]="";	// Dateiname
-	char title[20];			// Titel für Dialog
-	OPENFILENAME FileData = {	// Informationen Für Dateidialog:
-	    sizeof(OPENFILENAME),// Größe dieser Struktur
-	    hWnd,				// Eigentümer-Fenster dieses Dialogs
-	    0,					// Zugehörige Applikation
+	char title[20];			// Titel fï¿½r Dialog
+	OPENFILENAME FileData = {	// Informationen Fï¿½r Dateidialog:
+	    sizeof(OPENFILENAME),// Grï¿½ï¿½e dieser Struktur
+	    hWnd,				// Eigentï¿½mer-Fenster dieses Dialogs
+	    0,					// Zugehï¿½rige Applikation
 	    Filter,				// Dateifilter
-	    NULL,				// Letzter gewählter Dateityp
-	    0,					// Läange des letzten gewähllen Dateityps
-	    0,					// Index des gewählten Dateityps
+	    NULL,				// Letzter gewï¿½hlter Dateityp
+	    0,					// Lï¿½ange des letzten gewï¿½hllen Dateityps
+	    0,					// Index des gewï¿½hlten Dateityps
 	    FileName,			// Dateiname mit Pfad
-	    300,				// maximale Länge des Dateinamens mit Pfad
+	    300,				// maximale Lï¿½nge des Dateinamens mit Pfad
 	    NULL,				// Dateiname ohne Pfad
-	    0,					// maximale Länge des Dateinamens ohne Pfad
+	    0,					// maximale Lï¿½nge des Dateinamens ohne Pfad
 	    NULL,				// Anfangsverzeichnis
 	    title,				// Titel in Kopfzeile
 	    OFN_FILEMUSTEXIST,	// Eigenschaften des Dialogs
 	    0,					// Offset bis Dateiname
 	    0,					// Offset bis Endung
 	    "sdk",				// Standard-Endung
-	    0,					// Daten für die 'Hook'-Prozedur
+	    0,					// Daten fï¿½r die 'Hook'-Prozedur
 	    NULL,				// Zeiger auf 'Hook'-Prozedur
 	    NULL				// Name des Templates
 	}; 
@@ -228,7 +229,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_CLOSE:		// X-Taste am Fenster
-		if(MessageBox(hWnd, "Wollen Sie wirklich aufhören?", "Frage:", MB_YESNO)==IDYES)
+		if(MessageBox(hWnd, "Wollen Sie wirklich aufhÃ¶ren?", "Frage:", MB_YESNO)==IDYES)
 			DestroyWindow(hWnd);
 		else return 0;
 		break;
@@ -237,7 +238,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 
-	case WM_LBUTTONDOWN:// linke Maustaste gedrückt
+	case WM_LBUTTONDOWN:// linke Maustaste gedrï¿½ckt
 	   if(getPosition(&y1, &x1, &n1, lParam)) x1 = -1;
 	   break;
 
@@ -269,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Verzweigung auf Art des Befehls
 			switch(LOWORD(wParam)) {
 
-			case LOAD_BUTTON_ID:	// die Taste 'Laden..' betätigt
+			case LOAD_BUTTON_ID:	// die Taste 'Laden..' betï¿½tigt
 				strcpy(title, "Sudoku laden");
 				if(GetOpenFileName(&FileData)) {
 					Sudoku(loadFile, 0, 0, 0, FileData.lpstrFile, hWnd);
@@ -277,24 +278,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				break;
 
-			case SAVE_BUTTON_ID:	// die Taste 'Speichern...' betätigt
+			case SAVE_BUTTON_ID:	// die Taste 'Speichern...' betï¿½tigt
 				strcpy(title, "Sudoku speichern");
 				if(GetSaveFileName(&FileData)) {
 					Sudoku(saveFile, 0, 0, 0, FileData.lpstrFile, hWnd);
 				}
 				break;
 
-			case SPECIAL_BUTTON1_ID:// Spezialtaste 1 betätigt
+			case SPECIAL_BUTTON1_ID:// Spezialtaste 1 betï¿½tigt
 				Sudoku(special1, 0, 0, 0, NULL, hWnd);
 				RedrawWindow(hWnd, NULL, NULL, RDW_ERASE|RDW_INVALIDATE);
 				break;
 
-			case SPECIAL_BUTTON2_ID:// Spezialtaste 2 betätigt
+			case SPECIAL_BUTTON2_ID:// Spezialtaste 2 betï¿½tigt
 				Sudoku(special2, 0, 0, 0, NULL, hWnd);
 				RedrawWindow(hWnd, NULL, NULL, RDW_ERASE|RDW_INVALIDATE);
 				break;
 
-			case SPECIAL_BUTTON3_ID:// Spezialtaste 3 betätigt
+			case SPECIAL_BUTTON3_ID:// Spezialtaste 3 betï¿½tigt
 				Sudoku(special3, 0, 0, 0, NULL, hWnd);
 				RedrawWindow(hWnd, NULL, NULL, RDW_ERASE|RDW_INVALIDATE);
 				break;
@@ -360,7 +361,7 @@ int getPosition(int *r, int *c, int *element, LPARAM lParam)
 // Fensterinhalt zeichnen
 void drawWindow(HWND hWnd)
 {
-	HDC hdc;		// Handle für Zeichenumgebung
+	HDC hdc;		// Handle fï¿½r Zeichenumgebung
 	PAINTSTRUCT ps;	// Informationen zum Zeichnen
 
 	// Zeichnen beginnen
@@ -374,12 +375,12 @@ void drawWindow(HWND hWnd)
 	EndPaint(hWnd, &ps);
 }
 
-// Gitter für Sudoku zeichnen
+// Gitter fï¿½r Sudoku zeichnen
 void drawGrid(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 {
 	POINT oldPos;	// vorherige Cursor-Position
 	int i, ix, iy;	// lokale Laufvariablen
-	HPEN hGrey[5];	// fünf Grautöne
+	HPEN hGrey[5];	// fï¿½nf Grautï¿½ne
 	HPEN hOldPen;	// verheriger Stift
 
 	// Stifte vorbereiten
@@ -388,7 +389,7 @@ void drawGrid(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 	hOldPen = SelectObject(hdc, hGrey[0]);
 	MoveToEx(hdc, 0, 0, &oldPos);
 
-	// äußeren Rand zeichnen
+	// ï¿½uï¿½eren Rand zeichnen
 	for(i=1; i<=2; i++) {
 		// helle Seite
 		SelectObject(hdc, hGrey[2+i]);
@@ -443,7 +444,7 @@ void drawGrid(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 		}
 	}
 
-	// Aufräumen
+	// Aufrï¿½umen
 	SelectObject(hdc, hOldPen);
 	MoveToEx(hdc, oldPos.x, oldPos.y, NULL);
 }
@@ -455,8 +456,8 @@ void drawNumbers(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 	char Text[2];		// aktuelle Nummer
 	RECT rect;			// Feld, in das die Nummer geschrieben werden soll
 	int oldBkMode;		// alter Hintergrund-Modus
-	HFONT bigThickFont;	// große fette Schrift
-	HFONT bigThinFont;	// große dünne Schrift
+	HFONT bigThickFont;	// groï¿½e fette Schrift
+	HFONT bigThinFont;	// groï¿½e dï¿½nne Schrift
 	HFONT smallFont;	// kleine Schrift
 	HFONT oldFont;		// vorherige Schrift
 
@@ -474,7 +475,7 @@ void drawNumbers(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 	oldFont = SelectObject(hdc, smallFont);
 	Text[1] = '\0';
 
-	// große Zahlen schreiben
+	// groï¿½e Zahlen schreiben
 	for(ix=0; ix<9; ix++) {
 		for(iy=0; iy<9; iy++) {
 			if(Sudoku(getFinished, iy, ix, 0, NULL, 0)) {
@@ -509,7 +510,7 @@ void drawNumbers(HDC hdc, int xOff, int yOff, int boxSize, int gapSize)
 		}
 	}
 
-	// Aufräumen
+	// Aufrï¿½umen
 	SetBkMode(hdc, oldBkMode);
 	SelectObject(hdc, oldFont);
 	DeleteObject(bigThickFont);

@@ -60,7 +60,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 // Dateiname: Zeiger auf Zeichenkette
 // Handle:	Handle des Fensters
 {
-	static tDaten Felder[9][9] = { 0 };		//Definiert mit static zur dauerhaften Speicherung da die Funktion zwischendurch verlassen wird
+	static tDaten Felder[9][9] = { 0 };		// Definiert mit static zur dauerhaften Speicherung da die Funktion zwischendurch verlassen wird
 	static int firstCall=1;					// Markierung f�r den ersten Aufruf
 	int returnValue=0;						// R�ckgabewert der Funktion
 	FILE* out = NULL;
@@ -75,15 +75,23 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 	}
 
 	switch(task) {
+
+	//works
 	case getNumber:		// gefundene Ziffer
 		returnValue = Felder[r][c].Zahlenwert;//Return welche Zahl gefunden wurde vom User
 		break;
+
+	//works
 	case getFinished:	// wurde Ziffer schon gefunden?
 		returnValue = Felder[r][c].Zahlgef;//Return ob Feld schon gefunden wurde (eingetragen vom User)
 		break;
+
+	//works
 	case getProtected:	// ist die Ziffer ein Vorgabewert?
 		returnValue = Felder[r][c].Zahlvorgabe;//Return ob Feld ein Vorgabewert ist (true / false)
 		break;
+
+	//works
 	case getGuess:		// geratene Ziffer
 		if (e == 0) returnValue = Felder[r][c].einsGeraten;//Wenn erstes Feld abgefragt wird, Wert von einsGeraten (true / false) zur�ckgeben
 		else if (e == 1) returnValue = Felder[r][c].zweiGeraten;
@@ -96,6 +104,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		else if (e == 8) returnValue = Felder[r][c].neunGeraten;
 		else returnValue = 0;
 		break;
+
+	//works
 	case singleClick:	// einfacher Mausklick
 		if (!Felder[r][c].Zahlvorgabe) {//Falls das Feld keine Vorgabe war
 			//welches Feld angeklickt wurde (h�tte man auch mit switch cases machen k�nnen, aber keine lust das nochmal zu �ndern)
@@ -155,6 +165,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			}
 		}
 		break;
+
+	//works
 	case doubleClick:	// doppelter Mausklick
 		if (!Felder[r][c].Zahlvorgabe) {//Falls Feld eine Vorgabe ist
 			if (Felder[r][c].Zahlgef) {//Falls Zahl gefunden wurde
@@ -166,13 +178,15 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			}
 		}
 		break;
+
+	//works
 	case loadFile://Sudoku aus Datei laden
 		inp = fopen((const char*)text, "rb");//inp Datei wird ge�ffnet als Lesen, Bin�r
 
 		// Spielfeld leeren
 		for (i = 0; i < 9; i++) {//Reihe
 			for (j = 0; j < 9; j++) {//Spalte
-				
+
 				Felder[i][j].Zahlenwert = 0;//Leeres Feld (0 -> leeres Feld)
 				Felder[i][j].Zahlvorgabe = 0;//Zahl ist keine Vorgabe
 				Felder[i][j].Zahlgef = 0;//Zahl nicht gefunden
@@ -201,6 +215,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			}
 		}
 		break;
+
+	//works, but doesnt allow the user to change user-put numbers after saving and reopening. after reopening all numbers are protected.
 	case saveFile:		// Sudoku in Datei speichern
 		out = fopen((const char*)text, "wt");//Datei �ffnen, in welche geschrieben werden soll
 		if(out==NULL) {//Falls Datei out nicht ge�ffnet werden konnte
@@ -211,21 +227,29 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		for(i=0; i<9; i++) {
 			for(j=0; j<9; j++) {
 				fprintf(out, "%d", Felder[i][j].Zahlenwert);//Zahlenwerte nacheinander in das Dokument schreiben
-			} 
+			}
 			fprintf(out, "\n" );//Zeilenumbruch nach 9 Zahlen, weil Sudoku ist 9x9
 		}
 		if(out) fclose(out);//Falls Dokument "out" offen ist, erfolgt das Schlie�en des Dokumentes
-		
+
 		break;
+
+	//check button?
 	case special1:		// Reaktion auf Spezialtaste 1
-		MessageBox(hWnd, "Spezial 1", "Info", MB_OK);
-		break;//Noch nicht in Betrieb
+
+
+		/*MessageBox(hWnd, "Check Numbers", "Info", MB_OK);*/
+		break;
+
+	//autofill/refresh all suggestions?
 	case special2:		// Reaktion auf Spezialtaste 2
-		MessageBox(hWnd, "Spezial 2", "Info", MB_OK);
-		break;//Noch nicht in Betrieb
+		MessageBox(hWnd, "Autofill Suggestions (idiot mode)", "Info", MB_OK);
+		break;
+
+	//refresh user input suggestions?
 	case special3:		// Reaktion auf Spezialtaste 3
-		MessageBox(hWnd, "Spezial 3", "Info", MB_OK);
-		break;//Noch nicht in Betrieb
+		MessageBox(hWnd, "Refresh Suggestions", "Info", MB_OK);
+		break;
 	}
 
 	return returnValue;

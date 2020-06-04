@@ -24,10 +24,9 @@
 
 #define SAVE_BUTTON_INCLUDED //Save button wurde mit einprogrammiert
 
-
-//#define SPECIAL_BUTTON_1_INCLUDED "Spezial 1"
-//#define SPECIAL_BUTTON_2_INCLUDED "Spezial 2"
-//#define SPECIAL_BUTTON_3_INCLUDED "Spezial 3"
+#define SPECIAL_BUTTON_1_INCLUDED "zahlen überprüfen"//check button
+#define SPECIAL_BUTTON_2_INCLUDED "idiot mode"//autofill suggestions
+#define SPECIAL_BUTTON_3_INCLUDED "notizen überprüfen"//refresh suggestions
 
 // Diese Aufzählung listet alle Aufgaben auf, mit der die Funktion
 // Sudoku aufgerufen werden kann.
