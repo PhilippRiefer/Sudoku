@@ -40,7 +40,7 @@ typedef struct {
 // Funktion Vector
 void intVector(tDaten Felder[9][9]);
 
-int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
+int Sudoku(tSudokuTask task, int r, int c, int e, char* text, HWND hWnd)
 // Diese Funktion wird von der Fensteranwendung an verschiedenen
 // Stellen aufgerufen. Im ersten Parameter 'task' steht dabei die
 // Aufgabe, die von der Funktion erledigt werden soll. Die anderen
@@ -226,8 +226,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			return -1;//Return Fehlercode
 		}
 
-		for(i=0; i<9; i++) {
-			for(j=0; j<9; j++) {
+		for(int i=0; i<9; i++) {
+			for(int j=0; j<9; j++) {
 				fprintf(out, "%d", Felder[i][j].Zahlenwert);//Zahlenwerte nacheinander in das Dokument schreiben
 			}
 			fprintf(out, "\n" );//Zeilenumbruch nach 9 Zahlen, weil Sudoku ist 9x9
@@ -252,6 +252,15 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		int y = 0;
 		int rightbacktrackmove = 0;
 		int numberfound = 0;
+		int iAmBacktracking = 0;
+
+		for (int x = 0; x < 9; x++)
+		{
+			for (int y = 0; y < 9; y++)
+			{
+				if (Felder[x][y].Zahlvorgabe) Felder[x][y].Loesungswert = Felder[x][y].Zahlenwert;
+			}
+		}
 
 		while (x < 9)
 		{
@@ -260,18 +269,22 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 			{
 				if (Felder[x][y].Zahlvorgabe) Felder[x][y].Loesungswert = Felder[x][y].Zahlenwert;
 				else {
-					//clear blacklist here???
 					int i = 0;
-					while(!numberfound)
+					do
 					{
+						numberfound = 0;
+						falscheZahl = 0;
 						Felder[x][y].Versuchswert = i + 1;
 						if (Felder[x][y].blacklist[Felder[x][y].Versuchswert]) falscheZahl = 1;//falls die zahl schon geblacklisted wurde
 						if (!falscheZahl) {
-							//check row
-							for (tx = 0; tx < 9; tx++) if (Felder[x][y].Versuchswert == Felder[tx][y].Loesungswert) falscheZahl = 1;
 							//check column
-							for (ty = 0; ty < 9; ty++) if (Felder[x][y].Versuchswert == Felder[x][ty].Loesungswert) falscheZahl = 1;
-
+							for (tx = 0; tx < 9; tx++) {
+								if (Felder[x][y].Versuchswert == Felder[tx][y].Loesungswert) falscheZahl = 1;
+							}
+							//check row
+							for (ty = 0; ty < 9; ty++) {
+								if (Felder[x][y].Versuchswert == Felder[x][ty].Loesungswert) falscheZahl = 1;
+							}
 							//check square
 							if (x < 3) tx = 0;
 							else if (x < 6) tx = 3;
@@ -289,11 +302,19 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 								}
 							}
 						}
+						
 
 						if (!falscheZahl) {
 							Felder[x][y].Loesungswert = Felder[x][y].Versuchswert;
+							iAmBacktracking = 0;
+							numberfound = 1;
 						}
 						else if (falscheZahl && i == 8) {//backtrack
+							iAmBacktracking = 1;
+
+							//clear blacklist here???
+							for (int a = 0; a < 10; a++) Felder[x][y].blacklist[a] = 0; //das feld von welchem aus man backtracken möchte clearen von jeglicher blacklist
+
 							rightbacktrackmove = 0;
 							while (!rightbacktrackmove) {
 								if (!y) {
@@ -313,14 +334,48 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 						}
 						if (i < 8) i++;
 						else i = 0;
-					}
+					} while (!numberfound);
 				}
-				y++;
+				if(!iAmBacktracking) y++;
 			}
-			x++;
+			if(!iAmBacktracking) x++;
 		}
 
 		if (error) MessageBox(hWnd, "Sudoku nicht lösbar", "Error", MB_OK);
+
+		FILE* new = NULL;
+
+		//datei öffnen
+		new = fopen("bullshit.txt", "wt");
+
+		//datei schreiben
+		if (new) {
+			for (int x = 0; x < 9; x++)
+			{
+				for (int y = 0; y < 9; y++)
+				{
+					fprintf(new, "%d", Felder[x][y].Loesungswert);
+				}
+				fprintf(new, "\n");
+			}
+		}
+
+		//datei schließen
+		if (new) fclose(new);
+
+		//sudoku lösungs ausgabe in konsole
+		for (int i = 0; i < 9; i++)
+		{
+			for (int j = 0; j < 9; j++)
+			{
+				printf("%d", Felder[i][j].Loesungswert);
+			}
+			printf("\n");
+		}
+
+		//compare solution to user input
+
+
 		break;
 
 	//autofill/refresh all suggestions?
