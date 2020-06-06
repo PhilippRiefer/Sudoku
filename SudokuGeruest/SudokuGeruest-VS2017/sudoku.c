@@ -32,6 +32,9 @@ typedef struct {
 	int siebenGeraten : 1;
 	int achtGeraten : 1;
 	int neunGeraten : 1;
+	int Versuchswert;
+	int Loesungswert;
+	int blacklist[10];
 } tDaten;
 
 // Funktion Vector
@@ -66,8 +69,7 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 	FILE* out = NULL;
 	FILE* inp = NULL;
 	char FileName[] = "";
-	int i;
-	int j;
+	int fehlerAnzahl = 0;
 
 	if(firstCall) {
 		intVector(Felder); // Daten initialisiert
@@ -168,11 +170,11 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 
 	//works
 	case doubleClick:	// doppelter Mausklick
-		if (!Felder[r][c].Zahlvorgabe) {//Falls Feld eine Vorgabe ist
+		if (!Felder[r][c].Zahlvorgabe) {//Falls Feld keine Vorgabe ist
 			if (Felder[r][c].Zahlgef) {//Falls Zahl gefunden wurde
 				Felder[r][c].Zahlgef = 0;//Zahl gefunden = false (0)
 			}
-			else {//Falls Feld keine Vorgabe ist
+			else {//Falls Zahl nicht gefunden wurde
 				Felder[r][c].Zahlgef = 1;//Zahl gefunden = true (1)
 				Felder[r][c].Zahlenwert = e + 1;//Zahlenwert auf das angeklickte Feld setzen. +1 weil if(arrays start at 1) trump = goodPresident;
 			}
@@ -184,8 +186,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		inp = fopen((const char*)text, "rb");//inp Datei wird ge�ffnet als Lesen, Bin�r
 
 		// Spielfeld leeren
-		for (i = 0; i < 9; i++) {//Reihe
-			for (j = 0; j < 9; j++) {//Spalte
+		for (int i = 0; i < 9; i++) {//Reihe
+			for (int j = 0; j < 9; j++) {//Spalte
 
 				Felder[i][j].Zahlenwert = 0;//Leeres Feld (0 -> leeres Feld)
 				Felder[i][j].Zahlvorgabe = 0;//Zahl ist keine Vorgabe
@@ -204,8 +206,8 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 		}
 
 		// Spielfeld mit den Werten aus der eingelesenen Datei f�llen
-		for (i = 0; i < 9; i++) {//Reihe
-			for (j = 0; j < 9; j++) {//Spalte
+		for (int i = 0; i < 9; i++) {//Reihe
+			for (int j = 0; j < 9; j++) {//Spalte
 				fscanf(inp, "%1d", &Felder[i][j].Zahlenwert);// Zahlenwert in das jeweilige Feld schreiben
 				//Steht in dem Feld eine Zahl wird diese Fett und schreibgesch�tzt eingetragen
 				if (Felder[i][j].Zahlenwert) {//Falls der Zahlenwert true ist (!= 0) (Falls das Feld eine Zahl hat)
@@ -237,8 +239,88 @@ int Sudoku(tSudokuTask task, int r, int c, int e, char *text, HWND hWnd)
 	//check button?
 	case special1:		// Reaktion auf Spezialtaste 1
 
+		
+		/*******************************************
+		going to use a brute force solver (recursive, backtracking) until i get hold of a better algorithm
+		*******************************************/
 
-		/*MessageBox(hWnd, "Check Numbers", "Info", MB_OK);*/
+		int tx = 0;
+		int ty = 0;
+		int falscheZahl = 0;
+		int error = 0;
+		int x = 0;
+		int y = 0;
+		int rightbacktrackmove = 0;
+		int numberfound = 0;
+
+		while (x < 9)
+		{
+			y = 0;
+			while (y < 9)
+			{
+				if (Felder[x][y].Zahlvorgabe) Felder[x][y].Loesungswert = Felder[x][y].Zahlenwert;
+				else {
+					//clear blacklist here???
+					int i = 0;
+					while(!numberfound)
+					{
+						Felder[x][y].Versuchswert = i + 1;
+						if (Felder[x][y].blacklist[Felder[x][y].Versuchswert]) falscheZahl = 1;//falls die zahl schon geblacklisted wurde
+						if (!falscheZahl) {
+							//check row
+							for (tx = 0; tx < 9; tx++) if (Felder[x][y].Versuchswert == Felder[tx][y].Loesungswert) falscheZahl = 1;
+							//check column
+							for (ty = 0; ty < 9; ty++) if (Felder[x][y].Versuchswert == Felder[x][ty].Loesungswert) falscheZahl = 1;
+
+							//check square
+							if (x < 3) tx = 0;
+							else if (x < 6) tx = 3;
+							else tx = 6;
+
+							if (y < 3) ty = 0;
+							else if (y < 6) ty = 3;
+							else ty = 6;
+
+							for (int n = tx; n < (tx + 3); n++)
+							{
+								for (int m = ty; m < (ty + 3); m++)
+								{
+									if (Felder[x][y].Versuchswert == Felder[tx][ty].Loesungswert) falscheZahl = 1;
+								}
+							}
+						}
+
+						if (!falscheZahl) {
+							Felder[x][y].Loesungswert = Felder[x][y].Versuchswert;
+						}
+						else if (falscheZahl && i == 8) {//backtrack
+							rightbacktrackmove = 0;
+							while (!rightbacktrackmove) {
+								if (!y) {
+									y = 8;
+									if (x) x -= 1;
+									else error = 1;
+								}
+								else
+								{
+									y -= 1;
+								}
+								if (!Felder[x][y].Zahlvorgabe) {//richtiger backtrack move, also nicht auf protected feld
+									rightbacktrackmove = 1;
+									Felder[x][y].blacklist[Felder[x][y].Loesungswert] = 1; //zahl die in dem vorherigen feld war wird geblacklisted, damit diese nicht nochmal drankommen kann
+								}
+							}
+						}
+						if (i < 8) i++;
+						else i = 0;
+					}
+				}
+				y++;
+			}
+			x++;
+		}
+
+		if (error) MessageBox(hWnd, "Sudoku nicht lösbar", "Error", MB_OK);
 		break;
 
 	//autofill/refresh all suggestions?
@@ -266,7 +348,7 @@ void intVector(tDaten Felder[9][9]) {
 	Felder[0][1].Zahlenwert = 2;
 	Felder[0][2].Zahlenwert = 6;
 	Felder[0][3].Zahlenwert = 0;
-	Felder[0][4].Zahlenwert = 0;
+	Felder[0][4].Zahlenwert = 0; 
 	Felder[0][5].Zahlenwert = 0;
 	Felder[0][6].Zahlenwert = 8;
 	Felder[0][7].Zahlenwert = 1;
